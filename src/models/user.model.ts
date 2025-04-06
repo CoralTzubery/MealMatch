@@ -2,6 +2,7 @@ import { Schema, model } from "mongoose";
 
 export interface User { 
     _id?: string;
+    cookieId?: string;
     username: string;
     password?: string;
     email?: string;
@@ -11,7 +12,7 @@ export interface User {
 }
 
 
-const UserSchema = new Schema({
+const UserSchema: Schema<User> = new Schema({
     cookieId: { type: String, unigue: true },
     username: { type: String, required: true, unigue: true },
     password: { type: String },

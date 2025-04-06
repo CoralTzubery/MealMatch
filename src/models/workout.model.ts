@@ -12,7 +12,7 @@ export interface Workout {
     updatedAt?: Date;
 }
 
-const WorkoutSchema = new Schema({
+const WorkoutSchema: Schema<Workout> = new Schema({
     userId: { type: String, required: true }, 
     name: { type: String, required: true },
     category: { type: String, enum: ["strength", "cardio", "flexibility", "other"], required: true },
