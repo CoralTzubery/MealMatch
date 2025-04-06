@@ -1,4 +1,4 @@
-import { Schema, model, Types } from "mongoose";
+import { Schema, model } from "mongoose";
 
 export interface User { 
     _id?: string;
@@ -8,15 +8,15 @@ export interface User {
     name?: string;
     createdAt?: Date;
     updatedAt?: Date;
-
 }
 
-// const UserSchema = new Schema({
-//     name: { type: String, required: true },
-//     email: { type: String, required: true, unique: true },
-//     userType: { type: String, enum: ["cook", "trainee"], required: true },
-//     cookieId: String,
-// }, { timestamps: true });
 
-// export const Listing = model("Post", schema);
+const UserSchema = new Schema({
+    cookieId: { type: String, unigue: true },
+    username: { type: String, required: true, unigue: true },
+    password: { type: String },
+    email:{ type: String },
+    name: { type: String },
+}, { timestamps: true });
 
+export const UserModel = model("User", UserSchema);
