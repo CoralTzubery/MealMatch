@@ -67,3 +67,26 @@ userRouter.put("/:id", async (req: Request, res: Response) => {
         res.status(500).json({ message: "Faild to update user", error });
     }
 });
+
+userRouter.delete("/:id", async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!Types.ObjectId.isValid(id)) {
+        res.status(400).json({ message: "Invalid user id format" });
+        return;
+    }
+
+    try {
+        const deletedUser = await UserModel.findByIdAndDelete(id);
+        
+        if (!deletedUser) {
+            res.status(404).json({ message: "User was not found" });
+            return;
+        }
+
+        res.json({ message: "User deleted successfully", deletedUser });
+    } catch (error) {
+        res.status(500).json({ message: "Faild to delete user", error });
+    }
+});
+
