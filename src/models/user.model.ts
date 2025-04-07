@@ -13,7 +13,7 @@ export interface User {
 
 
 const UserSchema: Schema<User> = new Schema({
-    cookieId: { type: String, unique: true },
+    cookieId: { type: String },
     username: { type: String, required: true, unique: true },
     password: { type: String },
     email:{ type: String },

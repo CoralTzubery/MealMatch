@@ -19,9 +19,6 @@ app.use("/api/matches", matchRouter);
 app.use(cookieParser());
 app.use("/api", authRouter);
 
-// export const app = express();
-
-
 // app.use((req, _, next) => {
 //     console.log(new Date(), req.method, req.url);
 //     next();
