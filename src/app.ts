@@ -4,11 +4,13 @@ import { json } from "body-parser";
 import cookieParser from "cookie-parser";
 import { router as apiRouter } from "./routers/api";
 import { userRouter } from "./routers/user.router";
+import { mealRouter } from "./routers/meal.router";
 
 export const app = express();
 
 app.use(json());
 app.use("/api/users", userRouter);
+app.use("/api/meals", mealRouter);
 
 
 // export const app = express();
