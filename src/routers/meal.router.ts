@@ -28,7 +28,7 @@ mealRouter.get("/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!Types.ObjectId.isValid(id)) {
-        res.status(400).json({ message: "Invalid user id format" });
+        res.status(400).json({ message: "Invalid meal id format" });
         return;
     }
 
