@@ -6,6 +6,7 @@ import { router as apiRouter } from "./routers/api";
 import { userRouter } from "./routers/user.router";
 import { mealRouter } from "./routers/meal.router";
 import { workoutRouter } from "./routers/workout.router";
+import { matchRouter } from "./routers/match.router";
 
 export const app = express();
 
@@ -13,7 +14,7 @@ app.use(json());
 app.use("/api/users", userRouter);
 app.use("/api/meals", mealRouter);
 app.use("/api/workouts", workoutRouter);
-
+app.use("/api/matches", matchRouter);
 
 // export const app = express();
 

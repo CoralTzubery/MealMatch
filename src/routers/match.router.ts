@@ -6,87 +6,86 @@ export const matchRouter = Router();
 
 matchRouter.get("/", async (_req: Request, res: Response) => {
     try {
-        const workouts = await WorkoutModel.find();
-        res.json(workouts);
+        const matches = await MatchModel.find().populate("meal").populate("workout");
+        res.json(matches);
     } catch (error) {
-        res.status(500).json({ message: "Faild to fetch workouts", error });
+        res.status(500).json({ message: "Faild to fetch matches", error });
     }
 
 });
 
-workoutRouter.post("/", async (req: Request, res: Response) => {
+matchRouter.post("/", async (req: Request, res: Response) => {
     try {
-        const newWorkout = new WorkoutModel(req.body);
-        const savedWorkout = await newWorkout.save();
-        res.status(201).json(savedWorkout);
+        const newMatch = new MatchModel(req.body);
+        const savedMatch = await newMatch.save();
+        res.status(201).json(savedMatch);
     } catch (error) {
-        res.status(400).json({ message: "Failed to create a workout", error });
+        res.status(400).json({ message: "Failed to create a match", error });
     }
 });
 
-workoutRouter.get("/:id", async (req:Request, res: Response) => {
+matchRouter.get("/:id", async (req:Request, res: Response) => {
     const { id } = req.params;
 
     if (!Types.ObjectId.isValid(id)) {
-        res.status(400).json({ message: "Invalid workout id format" });
+        res.status(400).json({ message: "Invalid match id format" });
         return;
     }
 
     try {
-        const workout = await WorkoutModel.findById(id);
+        const match = await MatchModel.findById(id).populate("meal").populate("workout");
         
-        if (!workout) {
-            res.status(404).json({ message: "Workout was not found" });
+        if (!match) {
+            res.status(404).json({ message: "Match was not found" });
             return;
         }
 
-        res.json(workout);
+        res.json(match);
     } catch (error) {
-        res.status(500).json({ message: "Faild to fetch workout", error });
+        res.status(500).json({ message: "Faild to fetch match", error });
     }
 });
 
-workoutRouter.put("/:id", async (req: Request, res: Response) => {
+matchRouter.put("/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!Types.ObjectId.isValid(id)) {
-        res.status(400).json({ message: "Invalid workout id format" });
+        res.status(400).json({ message: "Invalid match id format" });
         return;
     }
 
     try {
-        const updatedWorkout = await WorkoutModel.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+        const updatedMatch = await MatchModel.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
         
-        if (!updatedWorkout) {
-            res.status(404).json({ message: "Workout was not found" });
+        if (!updatedMatch) {
+            res.status(404).json({ message: "Match was not found" });
             return;
         }
 
-        res.json(updatedWorkout);
+        res.json(updatedMatch);
     } catch (error) {
-        res.status(500).json({ message: "Faild to update workout", error });
+        res.status(500).json({ message: "Faild to update match", error });
     }
 });
 
-workoutRouter.delete("/:id", async (req: Request, res: Response) => {
+matchRouter.delete("/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!Types.ObjectId.isValid(id)) {
-        res.status(400).json({ message: "Invalid workout id format" });
+        res.status(400).json({ message: "Invalid match id format" });
         return;
     }
 
     try {
-        const deletedWorkout = await WorkoutModel.findByIdAndDelete(id);
+        const deletedMatch = await MatchModel.findByIdAndDelete(id);
         
-        if (!deletedWorkout) {
-            res.status(404).json({ message: "Workout was not found" });
+        if (!deletedMatch) {
+            res.status(404).json({ message: "Match was not found" });
             return;
         }
 
-        res.json({ message: "Workout deleted successfully", deletedWorkout });
+        res.json({ message: "Match deleted successfully", deletedMatch });
     } catch (error) {
-        res.status(500).json({ message: "Faild to delete workout", error });
+        res.status(500).json({ message: "Faild to delete match", error });
     }
 });
-

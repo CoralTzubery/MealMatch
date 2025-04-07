@@ -80,7 +80,7 @@ mealRouter.delete("/:id", async (req: Request, res: Response) => {
         const deletedMeal = await MealModel.findByIdAndDelete(id);
         
         if (!deletedMeal) {
-            res.status(404).json({ message: "User was not found" });
+            res.status(404).json({ message: "Meal was not found" });
             return;
         }
 
