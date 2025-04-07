@@ -17,7 +17,7 @@ const WorkoutSchema: Schema<Workout> = new Schema({
     name: { type: String, required: true },
     category: { type: String, enum: ["strength", "cardio", "flexibility", "other"], required: true },
     duration: { type: Number },
-    intensity: { type: String, enum: ["low", "meduim", "high"] },
+    intensity: { type: String, enum: ["low", "medium", "high"] },
     description: {type: String }, 
 }, { timestamps: true });
 

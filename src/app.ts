@@ -5,12 +5,14 @@ import cookieParser from "cookie-parser";
 import { router as apiRouter } from "./routers/api";
 import { userRouter } from "./routers/user.router";
 import { mealRouter } from "./routers/meal.router";
+import { workoutRouter } from "./routers/workout.router";
 
 export const app = express();
 
 app.use(json());
 app.use("/api/users", userRouter);
 app.use("/api/meals", mealRouter);
+app.use("/api/workouts", workoutRouter);
 
 
 // export const app = express();
