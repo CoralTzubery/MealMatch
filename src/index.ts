@@ -4,15 +4,21 @@ import { createServer } from "http";
 import mongoose from "mongoose";
 import { app } from "./app";
 
-const server = createServer(app);
-const port = process.env.PORT || 8090;
+const PORT = 3000;
 
-async function init() {
-    await mongoose.connect(process.env.CONNECTION_STRING!, {
-        dbName: process.env.DB_NAME,
-    });
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhose:${PORT}`);
+});
 
-    server.listen(port, () => console.log(`Server listening on port ${port}`));
-}
+// const server = createServer(app);
+// const port = process.env.PORT || 8090;
 
-init();
+// async function init() {
+//     await mongoose.connect(process.env.CONNECTION_STRING!, {
+//         dbName: process.env.DB_NAME,
+//     });
+
+//     server.listen(port, () => console.log(`Server listening on port ${port}`));
+// }
+
+// init();
