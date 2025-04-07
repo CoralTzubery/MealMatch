@@ -45,3 +45,25 @@ userRouter.get("/:id", async (req:Request, res: Response) => {
         res.status(500).json({ message: "Faild to fetch user", error });
     }
 });
+
+userRouter.put("/:id", async (req: Request, res: Response) => {
+    const { id } = req.params;
+
+    if (!Types.ObjectId.isValid(id)) {
+        res.status(400).json({ message: "Invalid user id format" });
+        return;
+    }
+
+    try {
+        const updatedUser = await UserModel.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+        
+        if (!updatedUser) {
+            res.status(404).json({ message: "User was not found" });
+            return;
+        }
+
+        res.json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: "Faild to update user", error });
+    }
+});
