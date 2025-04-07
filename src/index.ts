@@ -4,21 +4,22 @@ import { createServer } from "http";
 import mongoose from "mongoose";
 import { app } from "./app";
 
-const PORT = 3000;
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhose:${PORT}`);
-});
+const server = createServer(app);
+const port = process.env.PORT || 3000;
 
-// const server = createServer(app);
-// const port = process.env.PORT || 8090;
+async function init() {
+    try {
+        await mongoose.connect(process.env.CONNECTION_STRING!, {
+            dbName: process.env.DB_NAME,
+        });
 
-// async function init() {
-//     await mongoose.connect(process.env.CONNECTION_STRING!, {
-//         dbName: process.env.DB_NAME,
-//     });
+        console.log("Connected to MongoDB");
+        server.listen(port, () => console.log(`Server listening on port ${port}`));
+    } catch (error) {
+        console.error("Failed to connect to MongoDB", error);
+        process.exit(1);
+    }
+}
 
-//     server.listen(port, () => console.log(`Server listening on port ${port}`));
-// }
-
-// init();
+init();
