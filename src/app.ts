@@ -3,7 +3,7 @@ import express from "express";
 import { json } from "body-parser";
 import cookieParser from "cookie-parser";
 import { router as apiRouter } from "./routers/api";
-import userRouter from "./routers/user.router";
+import { userRouter } from "./routers/user.router";
 
 export const app = express();
 
