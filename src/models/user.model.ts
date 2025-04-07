@@ -13,11 +13,11 @@ export interface User {
 
 
 const UserSchema: Schema<User> = new Schema({
-    cookieId: { type: String, unigue: true },
-    username: { type: String, required: true, unigue: true },
+    cookieId: { type: String, unique: true },
+    username: { type: String, required: true, unique: true },
     password: { type: String },
     email:{ type: String },
     name: { type: String },
 }, { timestamps: true });
 
-export const UserModel = model("User", UserSchema);
+export const UserModel = model<User>("User", UserSchema);

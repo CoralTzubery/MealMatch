@@ -21,4 +21,4 @@ const MatchSchema: Schema<Match> = new Schema({
     comment: { type: String },
 }, { timestamps: true });
 
-export const MatchModel = model("Match", MatchSchema);
+export const MatchModel = model<Match>("Match", MatchSchema);

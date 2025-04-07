@@ -21,4 +21,4 @@ const WorkoutSchema: Schema<Workout> = new Schema({
     description: {type: String }, 
 }, { timestamps: true });
 
-export const WorkoutModel = model("Workout", WorkoutSchema);
+export const WorkoutModel = model<Workout>("Workout", WorkoutSchema);

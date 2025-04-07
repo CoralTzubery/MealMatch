@@ -19,4 +19,4 @@ const MealSchema: Schema<Meal> = new Schema({
     description: { type: String },
 }, { timestamps: true });
 
-export const MealModel = model("Meal", MealSchema);
+export const MealModel = model<Meal>("Meal", MealSchema);
