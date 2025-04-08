@@ -10,12 +10,17 @@ import { authRouter } from "./routers/auth.router";
 
 export const app = express();
 
-app.use(json());
 app.use(cookieParser());
-app.use("/api", authRouter);
-
-
+app.use(json());
+  
 app.use("/api/users", userRouter);
 app.use("/api/meals", mealRouter);
 app.use("/api/workouts", workoutRouter);
 app.use("/api/matches", matchRouter);
+app.use("/api/login", authRouter);
+
+app.use(express.static("public"));
+
+app.use((_req, res) => {
+    res.status(404).sendFile(path.join(__dirname, "../public/404.html"));
+});
