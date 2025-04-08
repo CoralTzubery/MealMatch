@@ -48,7 +48,7 @@ workoutRouter.get("/:id", requireUser, async (req:Request, res: Response) => {
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
-        const workout = await WorkoutModel.findById({ _id: id, userId: req.user._id });
+        const workout = await WorkoutModel.findOne({ _id: id, userId: req.user._id });
         
         if (!workout) {
             res.status(404).json({ message: "Workout was not found" });
@@ -75,7 +75,7 @@ workoutRouter.put("/:id", requireUser, async (req: Request, res: Response) => {
             return;
         }
 
-        const updatedWorkout = await WorkoutModel.findByIdAndUpdate({ _id: id, userId: req.user._id }, req.body, { new: true, runValidators: true });
+        const updatedWorkout = await WorkoutModel.findOneAndUpdate({ _id: id, userId: req.user._id }, req.body, { new: true, runValidators: true });
         
         if (!updatedWorkout) {
             res.status(404).json({ message: "Workout was not found" });
@@ -102,7 +102,7 @@ workoutRouter.delete("/:id", requireUser, async (req: Request, res: Response) =>
             return;
         }
 
-        const deletedWorkout = await WorkoutModel.findByIdAndDelete({ _id: id, userId: req.user._id });
+        const deletedWorkout = await WorkoutModel.findOneAndDelete({ _id: id, userId: req.user._id });
         
         if (!deletedWorkout) {
             res.status(404).json({ message: "Workout was not found" });

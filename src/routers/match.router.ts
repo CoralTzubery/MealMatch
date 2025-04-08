@@ -50,7 +50,7 @@ matchRouter.get("/:id", requireUser, async (req:Request, res: Response) => {
             return;
         }
 
-        const match = await MatchModel.findById({ _id: id, userId: req.user._id }).populate("meal").populate("workout");
+        const match = await MatchModel.findOne({ _id: id, userId: req.user._id }).populate("meal").populate("workout");
         
         if (!match) {
             res.status(404).json({ message: "Match was not found" });

@@ -47,7 +47,7 @@ mealRouter.get("/:id", requireUser, async (req: Request, res: Response) => {
             return;
         }
 
-        const meal = await MealModel.findOne({ _id: id, userId: req.user!._id });
+        const meal = await MealModel.findOne({ _id: id, userId: req.user._id });
 
         if (!meal) {
             res.status(404).json({ message: "Meal was not found" });
@@ -73,7 +73,7 @@ mealRouter.put("/:id", requireUser, async (req: Request, res: Response) => {
             return;
         }
 
-        const updatedMeal = await MealModel.findByIdAndUpdate({ _id: id, userId: req.user!._id }, req.body, { new: true, runValidators: true });
+        const updatedMeal = await MealModel.findOneAndUpdate({ _id: id, userId: req.user._id }, req.body, { new: true, runValidators: true });
         
         if (!updatedMeal) {
             res.status(404).json({ message: "Meal was not found" });
@@ -100,7 +100,7 @@ mealRouter.delete("/:id", requireUser, async (req: Request, res: Response) => {
             return;
         }
 
-        const deletedMeal = await MealModel.findByIdAndDelete({ _id: id, userId: req.user!._id });
+        const deletedMeal = await MealModel.findOneAndDelete({ _id: id, userId: req.user._id });
         
         if (!deletedMeal) {
             res.status(404).json({ message: "Meal was not found" });
