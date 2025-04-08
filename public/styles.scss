@@ -70,3 +70,34 @@ ul #matches-list {
       font-weight: bold;
     }
   }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+        display: flex;
+        flex-direction: column;
+        font-weight: bold;
+    }
+
+    input, textarea {
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        border: 1px solid black;
+    }
+
+    button[type="submit"] {
+        background-color: lightgreen;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+
+        &:hover{
+            background-color: darkgreen;
+        }
+    }
+  }
