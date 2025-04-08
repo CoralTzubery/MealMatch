@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { UserModel, User } from "../models/user.model";
 
-export async function requireUser(req: Request & { user?: User }, res: Response, next: NextFunction) {
+export async function requireUser(req: Request, res: Response, next: NextFunction) {
     const cookieId = req.cookies.session;
 
     if (!cookieId) {

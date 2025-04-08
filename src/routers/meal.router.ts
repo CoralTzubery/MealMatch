@@ -17,7 +17,12 @@ mealRouter.get("/", async (_req: Request, res: Response) => {
 
 mealRouter.post("/", requireUser, async (req: Request, res: Response) => {
     try {
-        const newMeal = new MealModel(req.body);
+        if (!req.user) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
+        const newMeal = new MealModel({ ...req.body, userId: req.user._id });
         const saveMeal = await newMeal.save();
         res.status(201).json(saveMeal);
     } catch (error) {
@@ -25,22 +30,14 @@ mealRouter.post("/", requireUser, async (req: Request, res: Response) => {
     }
 });
 
-mealRouter.get("/:id", async (req: Request, res: Response) => {
-    const { id } = req.params;
-
-    if (!Types.ObjectId.isValid(id)) {
-        res.status(400).json({ message: "Invalid meal id format" });
-        return;
-    }
-
+mealRouter.get("/:id", requireUser, async (req: Request, res: Response) => {
     try {
-        const meal = await MealModel.findById(id);
-        
-        if (!meal) {
-            res.status(404).json({ message: "Meal was not found" });
+        if (!req.user) {
+            res.status(401).json({ message: "Unauthorized" });
             return;
         }
 
+        const meal = await MealModel.find({ userId: req.user._id });
         res.json(meal);
     } catch (error) {
         res.status(500).json({ message: "Faild to fetch meal", error });
