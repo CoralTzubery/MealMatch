@@ -5,9 +5,14 @@ import { requireUser } from "../middleware/auth.middleware";
 
 export const workoutRouter = Router();
 
-workoutRouter.get("/", async (_req: Request, res: Response) => {
+workoutRouter.get("/", requireUser, async (req: Request, res: Response) => {
     try {
-        const workouts = await WorkoutModel.find();
+        if (!req.user) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
+        const workouts = await WorkoutModel.find({ userId: req.user._id });
         res.json(workouts);
     } catch (error) {
         res.status(500).json({ message: "Faild to fetch workouts", error });
@@ -16,12 +21,12 @@ workoutRouter.get("/", async (_req: Request, res: Response) => {
 });
 
 workoutRouter.post("/", requireUser, async (req: Request, res: Response) => {
-    if (!req.user) {
-        res.status(401).json({ message: "Unauthorized" });
-        return;
-    }
-
     try {
+        if (!req.user) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
         const newWorkout = new WorkoutModel({ ...req.body, userId: req.user._id });
         const savedWorkout = await newWorkout.save();
         res.status(201).json(savedWorkout);
@@ -30,7 +35,7 @@ workoutRouter.post("/", requireUser, async (req: Request, res: Response) => {
     }
 });
 
-workoutRouter.get("/:id", async (req:Request, res: Response) => {
+workoutRouter.get("/:id", requireUser, async (req:Request, res: Response) => {
     const { id } = req.params;
 
     if (!Types.ObjectId.isValid(id)) {
@@ -39,7 +44,11 @@ workoutRouter.get("/:id", async (req:Request, res: Response) => {
     }
 
     try {
-        const workout = await WorkoutModel.findById(id);
+        if (!req.user) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+        const workout = await WorkoutModel.findById({ _id: id, userId: req.user._id });
         
         if (!workout) {
             res.status(404).json({ message: "Workout was not found" });
@@ -52,7 +61,7 @@ workoutRouter.get("/:id", async (req:Request, res: Response) => {
     }
 });
 
-workoutRouter.put("/:id", async (req: Request, res: Response) => {
+workoutRouter.put("/:id", requireUser, async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!Types.ObjectId.isValid(id)) {
@@ -61,7 +70,12 @@ workoutRouter.put("/:id", async (req: Request, res: Response) => {
     }
 
     try {
-        const updatedWorkout = await WorkoutModel.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+        if (!req.user) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
+        const updatedWorkout = await WorkoutModel.findByIdAndUpdate({ _id: id, userId: req.user._id }, req.body, { new: true, runValidators: true });
         
         if (!updatedWorkout) {
             res.status(404).json({ message: "Workout was not found" });
@@ -74,7 +88,7 @@ workoutRouter.put("/:id", async (req: Request, res: Response) => {
     }
 });
 
-workoutRouter.delete("/:id", async (req: Request, res: Response) => {
+workoutRouter.delete("/:id", requireUser, async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!Types.ObjectId.isValid(id)) {
@@ -83,7 +97,12 @@ workoutRouter.delete("/:id", async (req: Request, res: Response) => {
     }
 
     try {
-        const deletedWorkout = await WorkoutModel.findByIdAndDelete(id);
+        if (!req.user) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
+        const deletedWorkout = await WorkoutModel.findByIdAndDelete({ _id: id, userId: req.user._id });
         
         if (!deletedWorkout) {
             res.status(404).json({ message: "Workout was not found" });
