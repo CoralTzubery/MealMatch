@@ -6,52 +6,92 @@ type Match = {
   workout: { _id: string; name: string } | null;
 };
 
+type Meal = {
+    _id: string;
+    name: string;
+    category: string;
+    ingredients: string[];
+    description?: string;
+}
+
 export async function initApp(root: HTMLPreElement) {
-  root.textContent = "";
+    const container = document.createElement("div");
 
-  const button = document.createElement("button");
-  button.textContent = "Load Matches";
-  button.className = "load-btn";
+    const loadMatchesBtn = document.createElement("button");
+    loadMatchesBtn.textContent = "Load Matches";
+    loadMatchesBtn.className = "load-btn";
+    loadMatchesBtn.onclick = () => loadMatches(container); 
 
-  const list = document.createElement("ul");
-  list.id = "matches-list";
+    const loadMealsBtn = document.createElement("button");
+    loadMealsBtn.textContent = "Load Meals";
+    loadMealsBtn.className = "load-btn";
+    loadMealsBtn.onclick = () => loadMeals(container);
 
-  button.addEventListener("click", async () => {
+    root.replaceChildren(loadMatchesBtn, loadMealsBtn, container);
+}
+
+async function loadMatches(container: HTMLElement) {
+    container.innerHTML = "<p>Loading matches</p>"
+
     try {
-      const res = await fetch("/api/matches", { credentials: "include" });
+        const res = await fetch("/api/matches", { credentials: "include" });
+        
+        if (!res.ok) {
+            throw new Error("Failed to fetch matches");
+        }
 
-      if (!res.ok) {
-        throw new Error("Failed to fetch matches");
-      }
+        const matches: Match[] = await res.json();
+        const list = document.createElement("ul");
 
-      const matches: Match[] = await res.json();
-      list.innerHTML = "";
+        if (matches.length === 0) {
+            list.innerHTML = "<li>No matches found</li>";
+        } else {
+            for (const match of matches) {
+                const item = document.createElement("li");
+                const meal = match.meal?.name ?? "Unknown meal";
+                const workout = match.workout?.name ?? "Unknown workout";
 
-      if (matches.length === 0) {
-        const noMatches = document.createElement("li");
-        noMatches.textContent = "No matches found";
-        list.appendChild(noMatches);
-        return;
-      }
-
-      matches.forEach((match) => {
-        const meal = match.meal?.name ?? "Unknown meal";
-        const workout = match.workout?.name ?? "Unknown workout";
-
-        const item = document.createElement("li");
-        item.innerHTML = `
-          <strong>${meal}</strong> + <strong>${workout}</strong></br>
-          Rating: ${match.rating ?? "-"}</br>
-          <em>${match.comment ?? ""}</em>
-        `;
-        list.appendChild(item);
-      });
+                item.innerHTML = `
+                <strong>${meal}</strong> + <strong>${workout}</strong><br />
+                Rating: ${match.rating ?? "-"}<br />
+                <em>${match.comment ?? ""}</em>
+                `;
+                list.appendChild(item);
+            }
+        }
+        container.replaceChildren(list);
     } catch (error) {
-      list.innerHTML = "<li class='error'>Error loading matches</li>";
+        container.innerHTML = `<p class="error">Error loading matches</p>`;
+        console.error(error);
+    }
+}
+
+async function loadMeals(container: HTMLElement) {
+    container.innerHTML = "<p>Loading meals</p>";
+    try {
+      const res = await fetch("/api/meals", { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to fetch meals");
+  
+      const meals: Meal[] = await res.json();
+      const list = document.createElement("ul");
+  
+      if (meals.length === 0) {
+        list.innerHTML = "<li>No meals found</li>";
+      } else {
+        for (const meal of meals) {
+          const item = document.createElement("li");
+          item.innerHTML = `
+            <strong>${meal.name}</strong> (${meal.category})<br />
+            Ingredients: ${meal.ingredients.join(", ")}<br />
+            ${meal.description ?? ""}
+          `;
+          list.appendChild(item);
+        }
+      }
+  
+      container.replaceChildren(list);
+    } catch (error) {
+      container.innerHTML = `<p class="error">Error loading meals</p>`;
       console.error(error);
     }
-  });
-
-  root.appendChild(button);
-  root.appendChild(list);
-}
+  }
