@@ -1,12 +1,18 @@
 import { initMatches } from "./matches";
+import { initMeals } from "./meals";
 
 export async function initApp(root: HTMLPreElement) {
     const container = document.createElement("div");
 
-    const loadMatchedBtn = document.createElement("button");
-    loadMatchedBtn.textContent =  "Load Matches";
-    loadMatchedBtn.className = "load-btn";
-    loadMatchedBtn.onclick = () => initMatches(container);
+    const loadMatchesBtn = document.createElement("button");
+    loadMatchesBtn.textContent =  "Load Matches";
+    loadMatchesBtn.className = "load-btn";
+    loadMatchesBtn.onclick = () => initMatches(container);
 
-    root.replaceChildren(loadMatchedBtn, container);
+    const loadMealsBtn = document.createElement("button");
+    loadMealsBtn.textContent = "Load Meals";
+    loadMealsBtn.className = "load-bth";
+    loadMealsBtn.onclick = () => initMeals(container);
+
+    root.replaceChildren(loadMatchesBtn, loadMealsBtn ,container);
 }
