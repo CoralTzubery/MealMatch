@@ -143,3 +143,7 @@ dist
 
 # macOS
 .DS_Store
+
+#styling
+/public/*.css
+/public/*css.map
