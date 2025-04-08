@@ -217,7 +217,7 @@ function renderMealForm(container: HTMLElement) {
 
             setTimeout(() => {
                 loadMeals(container);
-            }, 1000);
+            }, 2000);
         } catch (error) {
             console.error(error);
         }
