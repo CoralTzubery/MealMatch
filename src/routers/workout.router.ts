@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { WorkoutModel } from "../models/workout.model";
 import { Types } from "mongoose";
+import { requireUser } from "../middleware/auth.middleware";
 
 export const workoutRouter = Router();
 
@@ -14,9 +15,14 @@ workoutRouter.get("/", async (_req: Request, res: Response) => {
 
 });
 
-workoutRouter.post("/", async (req: Request, res: Response) => {
+workoutRouter.post("/", requireUser, async (req: Request, res: Response) => {
+    if (!req.user) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
+
     try {
-        const newWorkout = new WorkoutModel(req.body);
+        const newWorkout = new WorkoutModel({ ...req.body, userId: req.user._id });
         const savedWorkout = await newWorkout.save();
         res.status(201).json(savedWorkout);
     } catch (error) {

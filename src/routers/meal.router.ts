@@ -5,14 +5,18 @@ import { requireUser } from "../middleware/auth.middleware";
 
 export const mealRouter = Router();
 
-mealRouter.get("/", async (_req: Request, res: Response) => {
+mealRouter.get("/", requireUser, async (req: Request, res: Response) => {
     try {
-        const meals = await MealModel.find();
+        if (!req.user) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
+        const meals = await MealModel.find({ userId: req.user._id });
         res.json(meals);
     } catch (error) {
         res.status(500).json({ message: "Faild to fetch meals", error });
     }
-
 });
 
 mealRouter.post("/", requireUser, async (req: Request, res: Response) => {
@@ -31,20 +35,31 @@ mealRouter.post("/", requireUser, async (req: Request, res: Response) => {
 });
 
 mealRouter.get("/:id", requireUser, async (req: Request, res: Response) => {
+    const { id } = req.params;
+    
+    if (!Types.ObjectId.isValid(id)) {
+        res.status(400).json({ message: "Invalid meal id format" });
+    }
+
     try {
         if (!req.user) {
             res.status(401).json({ message: "Unauthorized" });
             return;
         }
 
-        const meal = await MealModel.find({ userId: req.user._id });
+        const meal = await MealModel.findOne({ _id: id, userId: req.user!._id });
+
+        if (!meal) {
+            res.status(404).json({ message: "Meal was not found" });
+        }
+
         res.json(meal);
     } catch (error) {
         res.status(500).json({ message: "Faild to fetch meal", error });
     }
 });
 
-mealRouter.put("/:id", async (req: Request, res: Response) => {
+mealRouter.put("/:id", requireUser, async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!Types.ObjectId.isValid(id)) {
@@ -53,7 +68,12 @@ mealRouter.put("/:id", async (req: Request, res: Response) => {
     }
 
     try {
-        const updatedMeal = await MealModel.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+        if (!req.user) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
+        const updatedMeal = await MealModel.findByIdAndUpdate({ _id: id, userId: req.user!._id }, req.body, { new: true, runValidators: true });
         
         if (!updatedMeal) {
             res.status(404).json({ message: "Meal was not found" });
@@ -66,7 +86,7 @@ mealRouter.put("/:id", async (req: Request, res: Response) => {
     }
 });
 
-mealRouter.delete("/:id", async (req: Request, res: Response) => {
+mealRouter.delete("/:id", requireUser, async (req: Request, res: Response) => {
     const { id } = req.params;
 
     if (!Types.ObjectId.isValid(id)) {
@@ -75,7 +95,12 @@ mealRouter.delete("/:id", async (req: Request, res: Response) => {
     }
 
     try {
-        const deletedMeal = await MealModel.findByIdAndDelete(id);
+        if (!req.user) {
+            res.status(401).json({ message: "Unauthorized" });
+            return;
+        }
+
+        const deletedMeal = await MealModel.findByIdAndDelete({ _id: id, userId: req.user!._id });
         
         if (!deletedMeal) {
             res.status(404).json({ message: "Meal was not found" });
