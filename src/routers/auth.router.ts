@@ -6,9 +6,7 @@ export const authRouter = Router();
 
 authRouter.post("/login", async (req: Request, res: Response) => {
     const { username, password } = req.body;
-
-    console.log("LOGIN BODY:", req.body);
-
+    
     if (!username || !password) {
         res.status(400).json({ message: "Username and password are required" });
         return;
