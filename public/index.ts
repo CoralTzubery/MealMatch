@@ -14,6 +14,13 @@ type Meal = {
     description?: string;
 }
 
+type Workout = {
+    _id: string;
+    name: string;
+    duration: number;
+    difficulty: string;
+}
+
 export async function initApp(root: HTMLPreElement) {
     const container = document.createElement("div");
 
@@ -27,7 +34,12 @@ export async function initApp(root: HTMLPreElement) {
     loadMealsBtn.className = "load-btn";
     loadMealsBtn.onclick = () => loadMeals(container);
 
-    root.replaceChildren(loadMatchesBtn, loadMealsBtn, container);
+    const loadWorkoutsBtn = document.createElement("button");
+    loadWorkoutsBtn.textContent = "Load Workouts";
+    loadWorkoutsBtn.className = "load-btn";
+    loadWorkoutsBtn.onclick = () => loadWorkouts(container);
+
+    root.replaceChildren(loadMatchesBtn, loadMealsBtn, loadWorkoutsBtn, container);
 }
 
 async function loadMatches(container: HTMLElement) {
@@ -68,9 +80,13 @@ async function loadMatches(container: HTMLElement) {
 
 async function loadMeals(container: HTMLElement) {
     container.innerHTML = "<p>Loading meals</p>";
+    
     try {
       const res = await fetch("/api/meals", { credentials: "include" });
-      if (!res.ok) throw new Error("Failed to fetch meals");
+      
+      if (!res.ok) {
+        throw new Error("Failed to fetch meals");
+      }
   
       const meals: Meal[] = await res.json();
       const list = document.createElement("ul");
@@ -92,6 +108,40 @@ async function loadMeals(container: HTMLElement) {
       container.replaceChildren(list);
     } catch (error) {
       container.innerHTML = `<p class="error">Error loading meals</p>`;
+      console.error(error);
+    }
+  }
+
+  async function loadWorkouts(container: HTMLElement) {
+    container.innerHTML = "<p>Loading workouts</p>";
+    
+    try {
+      const res = await fetch("/api/workouts", { credentials: "include" });
+      
+      if (!res.ok) {
+        throw new Error("Failed to fetch workouts");
+      }
+  
+      const workouts: Workout[] = await res.json();
+      const list = document.createElement("ul");
+  
+      if (workouts.length === 0) {
+        list.innerHTML = "<li>No workouts found</li>";
+      } else {
+        for (const workout of workouts) {
+          const item = document.createElement("li");
+          item.innerHTML = `
+          <strong>${workout.name}</strong><br />
+          Duration: ${workout.duration} minutes<br />
+          Difficulty: ${workout.difficulty}
+          `;
+          list.appendChild(item);
+        }
+      }
+  
+      container.replaceChildren(list);
+    } catch (error) {
+      container.innerHTML = `<p class="error">Error loading workouts</p>`;
       console.error(error);
     }
   }
