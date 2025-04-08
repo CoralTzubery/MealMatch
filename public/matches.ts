@@ -4,9 +4,9 @@ type Match = {
     comment?: string;
     meal: { _id: string; name: string } | null;
     workout: { _id: string; name: string } | null;
- }
+ };
 
-export async function initMatches(container: HTMLPreElement) {
+export async function initMatches(container: HTMLElement) {
     container.innerHTML = "<p>Loading matches</p>"
 
     try {
