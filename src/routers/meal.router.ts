@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 import { MealModel } from "../models/meal.model";
 import { Types } from "mongoose";
+import { requireUser } from "../middleware/auth.middleware";
 
 export const mealRouter = Router();
 
@@ -14,7 +15,7 @@ mealRouter.get("/", async (_req: Request, res: Response) => {
 
 });
 
-mealRouter.post("/", async (req: Request, res: Response) => {
+mealRouter.post("/", requireUser, async (req: Request, res: Response) => {
     try {
         const newMeal = new MealModel(req.body);
         const saveMeal = await newMeal.save();
