@@ -5,11 +5,11 @@ import { randomUUID } from "crypto";
 export const authRouter = Router();
 
 authRouter.post("/login", async (req: Request, res: Response) => {
-    const { username, passwrod } = req.body;
+    const { username, password } = req.body;
 
     console.log("LOGIN BODY:", req.body);
 
-    if (!username || !passwrod) {
+    if (!username || !password) {
         res.status(400).json({ message: "Username and password are required" });
         return;
     }
@@ -17,7 +17,7 @@ authRouter.post("/login", async (req: Request, res: Response) => {
     try {
         const user = await UserModel.findOne( {username });
 
-        if (!user || user.password !== passwrod ) {
+        if (!user || user.password !== password ) {
             res.status(401).json({ message: "Invalid username or password" });
             return;
         }  
