@@ -140,3 +140,5 @@ dist
 
 *.css
 *.css.map
+
+.DS_Store
