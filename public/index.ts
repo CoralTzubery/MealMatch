@@ -95,16 +95,11 @@ export async function initApp(root: HTMLPreElement) {
             showMealFormBtn.className = "load-btn";
             showMealFormBtn.onclick = () => renderMealForm(container);
 
-            logoutBtn.style.display = "inline";
-
-            container.append(
-                welcome,
-                loadMatchesBtn,
-                loadMealsBtn,
-                loadWorkoutsBtn,
-                showMealFormBtn,
-                logoutBtn
-            );
+            const buttonStack = document.createElement("div");
+            buttonStack.className = "button-stack";
+            buttonStack.append(loadMatchesBtn,loadMealsBtn, loadWorkoutsBtn, showMealFormBtn, logoutBtn);
+            
+            container.replaceChildren(buttonStack);
         } else {
             container.appendChild(loginForm);
         }
