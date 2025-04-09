@@ -146,6 +146,7 @@ async function loadMatches(container: HTMLElement) {
             }
         }
         container.replaceChildren(list);
+        addBackButton(container);
     } catch (error) {
         container.innerHTML = `<p class="error">Error loading matches</p>`;
         console.error(error);
@@ -180,6 +181,7 @@ async function loadMeals(container: HTMLElement) {
         }
 
         container.replaceChildren(list);
+        addBackButton(container);
     } catch (error) {
         container.innerHTML = `<p class="error">Error loading meals</p>`;
         console.error(error);
@@ -214,6 +216,7 @@ async function loadWorkouts(container: HTMLElement) {
         }
 
         container.replaceChildren(list);
+        addBackButton(container);
     } catch (error) {
         container.innerHTML = `<p class="error">Error loading workouts</p>`;
         console.error(error);
@@ -292,4 +295,13 @@ function renderMealForm(container: HTMLElement) {
     });
 
     container.appendChild(form);
+}
+
+function addBackButton(container: HTMLElement) {
+    const backBtn = document.createElement("button");
+
+    backBtn.textContent="Back";
+    backBtn.className = "load-btn";
+    backBtn.onclick = () => initApp(document.getElementById("app") as HTMLPreElement);
+    container.appendChild(backBtn);
 }
