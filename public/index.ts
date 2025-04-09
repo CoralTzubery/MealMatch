@@ -23,30 +23,98 @@ type Workout = {
 
 export async function initApp(root: HTMLPreElement) {
     const container = document.createElement("div");
+    const loginForm = document.createElement("form");
 
-    const loadMatchesBtn = document.createElement("button");
-    loadMatchesBtn.textContent = "Load Matches";
-    loadMatchesBtn.className = "load-btn";
-    loadMatchesBtn.onclick = () => loadMatches(container);
+    loginForm.innerHTML = `
+      <h2>Login</h2>
+      <label>
+        Username: <input type="text" name="username" required />
+      </label><br />
+      <label>
+        Password: <input type="password" name="password" required />
+      </label><br />
+      <button type="submit">Login</button>
+    `;
 
-    const loadMealsBtn = document.createElement("button");
-    loadMealsBtn.textContent = "Load Meals";
-    loadMealsBtn.className = "load-btn";
-    loadMealsBtn.onclick = () => loadMeals(container);
+    const logoutBtn = document.createElement("button");
+    logoutBtn.textContent = "Logout";
+    logoutBtn.style.display = "none";
+    logoutBtn.onclick = async () => {
+        await fetch("/api/login/logout", { method: "POST", credentials: "include" });
+        alert("Logged out");
+        window.location.reload();
+    };
 
-    const loadWorkoutsBtn = document.createElement("button");
-    loadWorkoutsBtn.textContent = "Load Workouts";
-    loadWorkoutsBtn.className = "load-btn";
-    loadWorkoutsBtn.onclick = () => loadWorkouts(container);
+    loginForm.onsubmit = async (e) => {
+        e.preventDefault();
 
-    const showMealFormBtn = document.createElement("button");
-    showMealFormBtn.textContent = "Add Meal";
-    showMealFormBtn.className = "load-btn";
-    showMealFormBtn.onclick = () => renderMealForm(container);
-    container.appendChild(showMealFormBtn);
+        const formData = new FormData(loginForm);
+        const username = formData.get("username") as string;
+        const password = formData.get("password") as string;
 
-    root.replaceChildren(loadMatchesBtn, loadMealsBtn, loadWorkoutsBtn, container);
+        const res = await fetch("/api/login", {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+        });
+
+        if (res.ok) {
+            alert("Login successful!");
+            window.location.reload();
+        } else {
+            alert("Login failed");
+        }
+    };
+
+    try {
+        const sessionRes = await fetch("/api/users/me", { credentials: "include" });
+
+        if (sessionRes.ok) {
+            const user = await sessionRes.json();
+            const welcome = document.createElement("p");
+            welcome.textContent = `Welcome, ${user.username}!`;
+
+            const loadMatchesBtn = document.createElement("button");
+            loadMatchesBtn.textContent = "Load Matches";
+            loadMatchesBtn.className = "load-btn";
+            loadMatchesBtn.onclick = () => loadMatches(container);
+
+            const loadMealsBtn = document.createElement("button");
+            loadMealsBtn.textContent = "Load Meals";
+            loadMealsBtn.className = "load-btn";
+            loadMealsBtn.onclick = () => loadMeals(container);
+
+            const loadWorkoutsBtn = document.createElement("button");
+            loadWorkoutsBtn.textContent = "Load Workouts";
+            loadWorkoutsBtn.className = "load-btn";
+            loadWorkoutsBtn.onclick = () => loadWorkouts(container);
+
+            const showMealFormBtn = document.createElement("button");
+            showMealFormBtn.textContent = "Add Meal";
+            showMealFormBtn.className = "load-btn";
+            showMealFormBtn.onclick = () => renderMealForm(container);
+
+            logoutBtn.style.display = "inline";
+
+            container.append(
+                welcome,
+                loadMatchesBtn,
+                loadMealsBtn,
+                loadWorkoutsBtn,
+                showMealFormBtn,
+                logoutBtn
+            );
+        } else {
+            container.appendChild(loginForm);
+        }
+    } catch {
+        container.appendChild(loginForm);
+    }
+
+    root.replaceChildren(container);
 }
+
 
 async function loadMatches(container: HTMLElement) {
     container.innerHTML = "<p>Loading matches</p>"

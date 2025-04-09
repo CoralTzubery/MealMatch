@@ -1,8 +1,23 @@
 import { Router, Request, Response } from "express";
 import { UserModel } from "../models/user.model";
 import { Types } from "mongoose";
+import { requireUser } from "../middleware/auth.middleware";
 
 export const userRouter = Router();
+
+userRouter.get("/me", requireUser, (req, res) => {
+    if (!req.user) {
+        res.status(401).json({ message: "Unauthorized" });
+        return;
+    }
+    
+    res.json({
+        _id: req.user._id,
+        username: req.user.username,
+        email: req.user.email,
+        name: req.user.name,
+    });
+});
 
 userRouter.get("/", async (_req: Request, res: Response) => {
     try {
