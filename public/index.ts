@@ -74,6 +74,7 @@ export async function initApp(root: HTMLPreElement) {
             const user = await sessionRes.json();
             const welcome = document.createElement("p");
             welcome.textContent = `Welcome, ${user.username}!`;
+            welcome.className = "welcome-text";
 
             const loadMatchesBtn = document.createElement("button");
             loadMatchesBtn.textContent = "Load Matches";
@@ -97,9 +98,12 @@ export async function initApp(root: HTMLPreElement) {
 
             const buttonStack = document.createElement("div");
             buttonStack.className = "button-stack";
-            buttonStack.append(loadMatchesBtn,loadMealsBtn, loadWorkoutsBtn, showMealFormBtn, logoutBtn);
+
+            logoutBtn.style.display = "inline";
+
+            buttonStack.append(loadMatchesBtn,loadMealsBtn, loadWorkoutsBtn, showMealFormBtn);
             
-            container.replaceChildren(buttonStack);
+            container.replaceChildren(welcome, logoutBtn, buttonStack);
         } else {
             container.appendChild(loginForm);
         }
